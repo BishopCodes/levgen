@@ -1,17 +1,17 @@
 {
-  "name": "legen",
-  "displayName": "Local Environment Generator",
+  "name": "levgen",
+  "displayName": "Local Environment Variable Generator",
   "version": "0.0.1",
-  "description": "Package that utilized config templating from package.json to generate a .env files",
+  "description": "Package used to generate .env from package.json configuration to enable local development when env is git ignored",
   "author": "BishopCodes",
   "publisher": "BishopCodes",
-  "homepage": "https://github.com/BishopCodes/legen/blob/master/readme.md",
+  "homepage": "https://github.com/BishopCodes/levgen/blob/master/readme.md",
   "bugs": {
-    "url": "https://github.com/BishopCodes/legen/issues"
+    "url": "https://github.com/BishopCodes/levgen/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BishopCodes/legen.git"
+    "url": "https://github.com/BishopCodes/levgen.git"
   },
   "main": "index.js",
   "bin": "./index.js",
