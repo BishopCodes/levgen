@@ -1,17 +1,17 @@
 {
-  "name": "envmake",
-  "displayName": "Env Make",
+  "name": "legen",
+  "displayName": "Local Environment Generator",
   "version": "0.0.1",
-  "description": "Package that makes a .env.local file from package.json config",
+  "description": "Package that utilized config templating from package.json to generate a .env files",
   "author": "BishopCodes",
   "publisher": "BishopCodes",
-  "homepage": "https://github.com/BishopCodes/envmake/blob/master/readme.md",
+  "homepage": "https://github.com/BishopCodes/legen/blob/master/readme.md",
   "bugs": {
-    "url": "https://github.com/BishopCodes/envmake/issues"
+    "url": "https://github.com/BishopCodes/legen/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BishopCodes/envmake.git"
+    "url": "https://github.com/BishopCodes/legen.git"
   },
   "main": "index.js",
   "bin": "./index.js",
@@ -21,10 +21,13 @@
   "keywords": [
     "env",
     "generator",
+    "templating",
+    "package.json",
     "no env in repo"
   ],
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.2",
     "commander": "^3.0.1"
   }
 }

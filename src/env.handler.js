@@ -1,23 +1,23 @@
 const fs = require('fs');
-const localConfigPath = './.env.local';
+const logger = require('./log.handler');
 
-const _configExists = () => fs.existsSync(localConfigPath);
+let _configPath = './.env.local';
+const _configExists = () => fs.existsSync(_configPath);
 const _isObject = (value) => value && typeof value === 'object' && value.constructor === Object;
 
-const handleUpdate = (value, section, data) => {
+const _handleUpdate = (value, section, data) => {
     let sectionIndex, valueIndex;
-    // Slight optimization than two findIndex
     // TODO: Further optimization
     data.forEach((line, index) => {
         if (section.trim() !== '' && line.includes(section) && sectionIndex === undefined) {
             sectionIndex = index;
         }
-        if (value.trim() !== '', line.includes(value) && valueIndex === undefined) {
+        if (value.trim() !== '' && line.split('=')[0] === value && valueIndex === undefined) {
             valueIndex = index;
         }
     });
 
-    if(sectionIndex === undefined && section != '') {
+    if (sectionIndex === undefined && section != '') {
         data.push(`# ${section}`);
     }
 
@@ -28,51 +28,58 @@ const handleUpdate = (value, section, data) => {
     return data;
 }
 
-const handleRemoval = (configToUpdate, newConfig) =>
-    configToUpdate.filter(existingLine => newConfig.findIndex(newLine => newLine === existingLine) >= 0);
+const _makeTemplateAndUpdateConfig = (data, existingConfig) => {
+    return {
+        template:
+            [].concat(...data.map(value => {
+                if (_isObject(value)) {
+                    const { '__comment': comment = '', values = [''] } = value;
+                    const section = values.map(name => {
+                        existingConfig = _handleUpdate(name, comment, existingConfig);
+                        return `${name}=`;
+                    });
+                    return [`# ${comment}`, ...section];
+                } else {
+                    existingConfig = _handleUpdate(value, '', existingConfig);
+                    return `${value}=`
+                }
+            })), configToWrite: existingConfig
+    }
+};
 
+const _handleRemoval = (configToWrite, template) =>
+    configToWrite.filter(existingLine =>
+        template.findIndex(line => ((existingLine.startsWith('#') && existingLine.includes(line))
+            || existingLine.split("=")[0] === line.split("=")[0])) >= 0);
 
-const generate = (data, shouldClobber) => {
-    let existingConfig = ((_configExists()) ? fs.readFileSync(localConfigPath, 'utf8').split('\n') : []);
-    const config = data.map(value => {
-        if (_isObject(value)) {
-            const {'__comment': comment = '', values = []} = value;
-            const section = values.map(name => {
-                handleUpdate(name, comment, existingConfig);
-                return `${name}=\n`;
-            });
-            return `# ${comment}\n${section.join('')}`
-        } else {
-            handleUpdate(value, '', existingConfig);
-            return `${value}=\n`
-        }
-    });
+const _generate = (data, shouldClobber) => {
+    let existingConfig = ((_configExists()) ? fs.readFileSync(_configPath, 'utf8').split('\n') : []);
 
-    if (shouldClobber && existingConfig.join('') !== '') {
-        existingConfig = handleRemoval(existingConfig, config);
+    let { template, configToWrite } = _makeTemplateAndUpdateConfig(data, existingConfig);
+
+    if (shouldClobber && configToWrite.join('') !== '') {
+        configToWrite = _handleRemoval(configToWrite, template);
     }
 
-    const configToWrite = (existingConfig.join('') === '') ? config.join('') : existingConfig.join('\n');
-
-    fs.writeFileSync(localConfigPath, configToWrite);
+    fs.writeFileSync(_configPath, configToWrite.join('\n'));
 }
 
-const makeConfig = (shouldClobber) => {
+const makeConfig = (shouldClobber, overrideName) => {
     if (!fs.existsSync('./package.json')) {
-        console.error("No package.json file exists in the executing directory. Have you ran npm init?");
-        return;
+        return logger.error("No package.json file exists in the executing directory. Have you ran npm init?");
     }
+
     const envData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
     if (envData.env === null || envData.env === undefined) {
-        console.error("env section could not be found in package.json");
-        return;
+        return logger.error("env section could not be found in package.json");
     } else if (!Array.isArray(envData.env)) {
-        console.error("env must be an array of values or objects");
-        return;
-    } else 
+        return logger.error("env must be an array of values or objects");
+    }
 
-    generate(envData.env, shouldClobber);
+    _configPath = `./${overrideName}`;
+
+    _generate(envData.env, shouldClobber, overrideName);
 }
 
 module.exports = {
