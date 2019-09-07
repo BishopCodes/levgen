@@ -1,12 +1,12 @@
 {
   "name": "envmake",
   "displayName": "Env Make",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Package that makes a .env.local file from package.json config",
   "author": "BishopCodes",
   "publisher": "BishopCodes",
   "homepage": "https://github.com/BishopCodes/envmake/blob/master/readme.md",
-  "bugs":{
+  "bugs": {
     "url": "https://github.com/BishopCodes/envmake/issues"
   },
   "repository": {
