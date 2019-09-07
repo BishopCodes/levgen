@@ -1,7 +1,7 @@
 {
   "name": "envmake",
   "displayName": "Env Make",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "Package that makes a .env.local file from package.json config",
   "author": "BishopCodes",
   "publisher": "BishopCodes",

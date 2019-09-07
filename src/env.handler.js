@@ -57,16 +57,22 @@ const generate = (data, shouldClobber) => {
     fs.writeFileSync(localConfigPath, configToWrite);
 }
 
-const makeConfig = (envData, shouldClobber) => {
-    if (envData === null || envData === undefined) {
-        console.error("env section could not be found in package.json");
-        return;
-    } else if (!Array.isArray(envData)) {
-        console.error("env must be an array of values or objects");
+const makeConfig = (shouldClobber) => {
+    if (!fs.existsSync('./package.json')) {
+        console.error("No package.json file exists in the executing directory. Have you ran npm init?");
         return;
     }
+    const envData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
-    generate(envData, shouldClobber);
+    if (envData.env === null || envData.env === undefined) {
+        console.error("env section could not be found in package.json");
+        return;
+    } else if (!Array.isArray(envData.env)) {
+        console.error("env must be an array of values or objects");
+        return;
+    } else 
+
+    generate(envData.env, shouldClobber);
 }
 
 module.exports = {

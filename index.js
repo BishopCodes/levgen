@@ -4,7 +4,7 @@ const program = require('commander');
 const handler = require('./src/env.handler');
 const pjson = require('./package.json');
 
-program.version(process.env.npm_package_version, '-v, --version', 'output current version');
+program.version(pjson.version, '-v, --version', 'output current version');
 
 program
     .option('--no-clobber', "Does not delete a value if no longer found during updates")
