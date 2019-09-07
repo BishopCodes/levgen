@@ -1,0 +1,26 @@
+{
+  "name": "envmake",
+  "displayName": "Env Make",
+  "version": "0.0.1",
+  "description": "Package that makes a .env.local file from package.json config",
+  "author": "BishopCodes",
+  "publisher": "BishopCodes",
+  "homepage": "https://github.com/BishopCodes/envmake/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BishopCodes/envmake"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "env",
+    "generator",
+    "no env in repo"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^3.0.1"
+  }
+}
